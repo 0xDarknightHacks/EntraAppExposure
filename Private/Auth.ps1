@@ -81,6 +81,8 @@ function Get-AppExposureAuthConfiguration {
 }
 
 function Get-AppExposureStoredClientSecret {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'SecretManagement can return a string from the vault; convert that retrieved value to SecureString without logging or persisting it.')]
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)][string]$VaultName,
         [Parameter(Mandatory = $true)][string]$SecretName
@@ -312,4 +314,3 @@ function Disconnect-AppExposureGraph {
 
     $script:GraphApplicationAccessToken = $null
 }
-
