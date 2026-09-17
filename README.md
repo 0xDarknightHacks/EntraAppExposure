@@ -79,7 +79,7 @@ The following views are recommended for the public README once release screensho
 <details>
 <summary><b>CLI Invoke run</b></summary>
 
-![CLI Invoke overview](Docs/Assets/cli-overview.png)
+![CLI Invoke overview](Docs/Assets/CLI-overview.png)
 </details>
 
 <details>
