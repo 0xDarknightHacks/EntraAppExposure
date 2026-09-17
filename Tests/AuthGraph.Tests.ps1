@@ -38,7 +38,10 @@ Describe 'App-only client-secret authentication contract' {
             }
         }
         Mock -CommandName Get-AppExposureStoredClientSecret -ModuleName EntraAppExposure -MockWith {
-            ConvertTo-SecureString -String 'client-secret-value' -AsPlainText -Force
+            $secret = New-Object System.Security.SecureString
+            foreach ($character in 'client-secret-value'.ToCharArray()) { $secret.AppendChar($character) }
+            $secret.MakeReadOnly()
+            return $secret
         }
         Mock -CommandName Request-AppExposureClientCredentialToken -ModuleName EntraAppExposure -MockWith {
             [PSCustomObject]@{ access_token = 'application-token'; expires_in = 3600 }
@@ -61,7 +64,10 @@ Describe 'App-only client-secret authentication contract' {
             }
         }
         Mock -CommandName Get-AppExposureStoredClientSecret -ModuleName EntraAppExposure -MockWith {
-            ConvertTo-SecureString -String 'client-secret-value' -AsPlainText -Force
+            $secret = New-Object System.Security.SecureString
+            foreach ($character in 'client-secret-value'.ToCharArray()) { $secret.AppendChar($character) }
+            $secret.MakeReadOnly()
+            return $secret
         }
         Mock -CommandName Request-AppExposureClientCredentialToken -ModuleName EntraAppExposure -MockWith {
             throw 'AADSTS7000215: Invalid client secret is provided.'
