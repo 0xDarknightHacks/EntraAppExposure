@@ -1,0 +1,37 @@
+# Assessment/customer outputs
+/Reports/
+/OfflineValidation/
+/BaselineValidation/
+/OfflineReports/
+/TestResults/
+/Coverage/
+
+# Runtime logs and generated archives
+*.log
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# Local authentication/configuration/state
+.env
+.env.*
+!.env.example
+/config.json
+/.entra-app-exposure/
+**/SecretStore/
+
+# PowerShell/editor/temp artifacts
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.user
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,685 @@
+{
+  "SchemaVersion": "2.1",
+  "BaselineVersion": "2026.09.17.2",
+  "Name": "Entra App Exposure baseline",
+  "Policy": {
+    "Credential": {
+      "LongLivedDays": 180,
+      "ExpiringSoonDays": 30,
+      "MaxActiveCredentials": 3
+    },
+    "Ownership": {
+      "MinimumOwners": 2
+    },
+    "SensitiveApplicationPermissions": [
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Directory.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "AppRoleAssignment.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "RoleManagement.ReadWrite.Directory"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Policy.ReadWrite.ApplicationConfiguration"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Policy.ReadWrite.ConditionalAccess"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "UserAuthenticationMethod.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Application.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementApps.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementConfiguration.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementManagedDevices.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementServiceConfig.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementRBAC.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Device.ReadWrite.All"
+      }
+    ],
+    "SensitiveDelegatedPermissions": [
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Directory.AccessAsUser.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Directory.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Mail.ReadWrite"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Mail.Send"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Files.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Sites.FullControl.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "User.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Policy.ReadWrite.ConditionalAccess"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "UserAuthenticationMethod.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Application.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementApps.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementConfiguration.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementManagedDevices.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementServiceConfig.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "DeviceManagementRBAC.ReadWrite.All"
+      },
+      {
+        "ResourceAppId": "00000003-0000-0000-c000-000000000000",
+        "PermissionValue": "Device.ReadWrite.All"
+      }
+    ],
+    "Activity": {
+      "MinimumReviewLookbackDays": 90,
+      "MinimumIdentityAgeDays": 90,
+      "ExcludeMicrosoftFirstParty": true,
+      "ExcludedServicePrincipalTypes": [
+        "ManagedIdentity"
+      ]
+    }
+  },
+  "Definitions": [
+    {
+      "Id": "EAE-DATA-SP-001",
+      "Enabled": true,
+      "Category": "DataQuality",
+      "Severity": "Informational",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Incomplete service-principal evidence collection",
+      "Rationale": "Unavailable evidence must remain distinguishable from a confirmed empty result so absence-based conclusions are not overstated.",
+      "Recommendation": "Resolve the reported collection failure and rerun the affected identity before treating absence-based conclusions as authoritative.",
+      "RequiredEvidence": [
+        "CollectionState"
+      ],
+      "References": []
+    },
+    {
+      "Id": "EAE-DATA-APP-001",
+      "Enabled": true,
+      "Category": "DataQuality",
+      "Severity": "Informational",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Incomplete application-registration evidence collection",
+      "Rationale": "Application ownership and credential evidence is first-class assessment data and remains distinct from the linked service-principal relationship.",
+      "Recommendation": "Resolve the reported collection failure and rerun before treating owner or credential conclusions as authoritative.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState"
+      ],
+      "References": []
+    },
+    {
+      "Id": "EAE-OAUTH-APP-001",
+      "Enabled": true,
+      "Category": "ApplicationPermission",
+      "Severity": "High",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive application permissions present",
+      "Rationale": "Application permissions operate without a signed-in user and represent standing application identity access.",
+      "Recommendation": "Confirm each app-only grant is required for the workload and remove grants that are no longer justified.",
+      "RequiredEvidence": [
+        "ApplicationPermission"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/manage-application-permissions"
+      ]
+    },
+    {
+      "Id": "EAE-OAUTH-DEL-001",
+      "Enabled": true,
+      "Category": "DelegatedPermission",
+      "Severity": "High",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive tenant-wide delegated permissions present",
+      "Rationale": "Tenant-wide delegated consent increases the user population for which the application can exercise the granted permissions.",
+      "Recommendation": "Validate the business need and tenant-wide consent scope; reduce or remove delegated grants that are no longer required.",
+      "RequiredEvidence": [
+        "DelegatedPermission"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/user-admin-consent-overview"
+      ]
+    },
+    {
+      "Id": "EAE-OAUTH-DEL-002",
+      "Enabled": true,
+      "Category": "DelegatedPermission",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive user-scoped delegated permissions present",
+      "Rationale": "Delegated grants allow an application to act with a signed-in user context and should remain limited to justified permissions.",
+      "Recommendation": "Validate the business need for each delegated grant and remove grants that are no longer required.",
+      "RequiredEvidence": [
+        "DelegatedPermission"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/user-admin-consent-overview"
+      ]
+    },
+    {
+      "Id": "EAE-SP-OWNER-001",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Service principal has no owner",
+      "Rationale": "Without an accountable owner, permission and lifecycle review can be delayed or missed.",
+      "Recommendation": "Assign accountable current owners and include the enterprise application in normal ownership review.",
+      "RequiredEvidence": [
+        "CollectionState",
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-SP-OWNER-002",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Low",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Service principal has only one owner",
+      "Rationale": "Microsoft recommends proactively monitoring applications to ensure at least two owners where possible, reducing dependency on one individual.",
+      "Recommendation": "Where operationally appropriate, assign a second accountable owner.",
+      "RequiredEvidence": [
+        "CollectionState",
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-SP-OWNER-003",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Disabled account owns service principal",
+      "Rationale": "A disabled account cannot provide reliable ongoing accountability for the enterprise application.",
+      "Recommendation": "Replace disabled owners with active accountable owners.",
+      "RequiredEvidence": [
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-SP-OWNER-004",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Low",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Guest account owns service principal",
+      "Rationale": "Guest ownership can complicate accountability when the external relationship changes.",
+      "Recommendation": "Confirm guest ownership is intentional and retain appropriate tenant-local accountable ownership.",
+      "RequiredEvidence": [
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-OWNER-001",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Medium",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application registration has no owner",
+      "Rationale": "Application-registration ownership is independent from service-principal ownership and provides accountability for registration configuration and credentials.",
+      "Recommendation": "Assign accountable current owners to the application registration.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationOwner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-OWNER-002",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application registration has only one owner",
+      "Rationale": "Microsoft recommends at least two application owners where possible to reduce dependency on one individual.",
+      "Recommendation": "Where operationally appropriate, assign a second accountable owner to the registration.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationOwner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-OWNER-003",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Medium",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Disabled account owns application registration",
+      "Rationale": "A disabled account cannot provide reliable ongoing accountability for registration configuration and credentials.",
+      "Recommendation": "Replace disabled owners with active accountable owners.",
+      "RequiredEvidence": [
+        "ApplicationOwner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-OWNER-004",
+      "Enabled": true,
+      "Category": "Ownership",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Guest account owns application registration",
+      "Rationale": "Guest ownership can complicate accountability when the external relationship changes.",
+      "Recommendation": "Confirm guest ownership is intentional and retain appropriate tenant-local accountable ownership.",
+      "RequiredEvidence": [
+        "ApplicationOwner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-CRED-001",
+      "Enabled": true,
+      "Category": "Credential",
+      "Severity": "Medium",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Expired application credential remains configured",
+      "Rationale": "Expired credentials create avoidable credential inventory and can indicate incomplete rotation or lifecycle cleanup.",
+      "Recommendation": "Remove expired credentials after confirming they are no longer required.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/monitoring-health/recommendation-renew-expiring-application-credential"
+      ]
+    },
+    {
+      "Id": "EAE-APP-CRED-002",
+      "Enabled": true,
+      "Category": "Credential",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application credential approaches expiry",
+      "Rationale": "Unplanned credential expiry can interrupt application authentication.",
+      "Recommendation": "Confirm rotation ownership and replace the credential before expiry if it remains required.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/monitoring-health/recommendation-renew-expiring-application-credential"
+      ]
+    },
+    {
+      "Id": "EAE-APP-CRED-003",
+      "Enabled": true,
+      "Category": "Credential",
+      "Severity": "Medium",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Long-lived application credential",
+      "Rationale": "Long credential lifetimes increase the period during which compromised credential material can remain usable.",
+      "Recommendation": "Use the shortest practical credential lifetime and rotate long-lived credentials according to organizational policy.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-APP-CRED-004",
+      "Enabled": true,
+      "Category": "Credential",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application registration has credential sprawl",
+      "Rationale": "A larger set of simultaneously active credentials increases lifecycle and rotation complexity and can leave obsolete credentials behind.",
+      "Recommendation": "Confirm each active credential is required and remove obsolete credentials after safe rotation validation.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-APP-ORPHAN-001",
+      "Enabled": true,
+      "Category": "ApplicationState",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Orphan application registration retains active credentials",
+      "Rationale": "Credential material remains configured even though no local service principal is correlated to the registration.",
+      "Recommendation": "Confirm the registration and its credentials are still required; remove obsolete credentials or the registration when appropriate.",
+      "RequiredEvidence": [
+        "ApplicationRegistration",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-SP-STATE-001",
+      "Enabled": true,
+      "Category": "ApplicationState",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Disabled service principal retains sensitive permissions",
+      "Rationale": "Disabled state reduces immediate sign-in use but retained sensitive grants remain part of the identity configuration and become effective again if the identity is re-enabled.",
+      "Recommendation": "Confirm retained grants are intentionally preserved and remove unnecessary permissions when the identity is retired.",
+      "RequiredEvidence": [
+        "ServicePrincipal",
+        "ApplicationPermission",
+        "DelegatedPermission"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-SP-STATE-002",
+      "Enabled": true,
+      "Category": "ApplicationState",
+      "Severity": "Low",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Disabled service principal is linked to active application credentials",
+      "Rationale": "A disabled enterprise application can still be linked to registration credentials that require independent lifecycle management.",
+      "Recommendation": "Confirm the application registration and active credentials are intentionally retained.",
+      "RequiredEvidence": [
+        "ServicePrincipal",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-SP-ACTIVITY-001",
+      "Enabled": true,
+      "Category": "Activity",
+      "Severity": "Informational",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Inactive application identity review candidate",
+      "Rationale": "No sign-in observed over a sufficiently long review window can help identify application identities that warrant lifecycle review. Microsoft-managed apps, managed identities, and newly created identities are excluded to reduce false positives; absence of observed sign-in still does not prove global inactivity.",
+      "Recommendation": "Confirm the application's business function and expected usage cadence with its owner before removing permissions, credentials, or the identity.",
+      "RequiredEvidence": [
+        "Activity"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/monitoring-health/recommendation-remove-unused-apps",
+        "https://learn.microsoft.com/graph/api/resources/serviceprincipalsigninactivity?view=graph-rest-beta"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-001",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "High",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive permissions combined with long-lived credentials",
+      "Rationale": "A long-lived credential linked to a highly privileged application identity increases persistence if credential material is exposed.",
+      "Recommendation": "Review permission necessity and shorten or rotate long-lived credentials as one coordinated remediation.",
+      "RequiredEvidence": [
+        "ApplicationPermission",
+        "DelegatedPermission",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-002",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "High",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive permissions without accountable service-principal ownership",
+      "Rationale": "Sensitive standing access without an accountable enterprise-application owner weakens governance around permission review and lifecycle decisions.",
+      "Recommendation": "Assign accountable owners and review the sensitive grants for continued necessity.",
+      "RequiredEvidence": [
+        "ApplicationPermission",
+        "DelegatedPermission",
+        "CollectionState",
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-003",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive permissions depend on a single service-principal owner",
+      "Rationale": "A privileged application with one owner concentrates governance responsibility in one individual.",
+      "Recommendation": "Where possible, assign a second accountable owner and review the sensitive grants.",
+      "RequiredEvidence": [
+        "ApplicationPermission",
+        "DelegatedPermission",
+        "CollectionState",
+        "Owner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-004",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "Low",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive permissions on an inactive review candidate",
+      "Rationale": "Standing sensitive access on an application identity with no observed sign-in over the configured review window is a useful prioritization signal, but the activity evidence is not proof that the application is unused.",
+      "Recommendation": "Validate business use with the accountable owner, then reduce unnecessary permissions or retire the identity only after confirming that the workload is no longer required.",
+      "RequiredEvidence": [
+        "ApplicationPermission",
+        "DelegatedPermission",
+        "Activity"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/monitoring-health/recommendation-remove-unused-apps",
+        "https://learn.microsoft.com/graph/api/resources/serviceprincipalsigninactivity?view=graph-rest-beta"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-005",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "High",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Unverified third-party application has sensitive permissions",
+      "Rationale": "Sensitive permissions granted to a third-party application without verified publisher metadata warrant additional trust and business-need validation.",
+      "Recommendation": "Validate the publisher, application provenance, business owner, and necessity of each sensitive grant.",
+      "RequiredEvidence": [
+        "ServicePrincipal",
+        "ApplicationPermission",
+        "DelegatedPermission"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/user-admin-consent-overview"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-006",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "High",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Ownerless application registration retains active credentials",
+      "Rationale": "Active credential material without an accountable registration owner combines authentication exposure with weak lifecycle accountability.",
+      "Recommendation": "Assign accountable owners and review whether each active credential remains necessary.",
+      "RequiredEvidence": [
+        "ApplicationCollectionState",
+        "ApplicationOwner",
+        "ApplicationCredential"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners",
+        "https://learn.microsoft.com/entra/architecture/security-operations-applications"
+      ]
+    },
+    {
+      "Id": "EAE-EXPOSURE-007",
+      "Enabled": true,
+      "Category": "CombinedExposure",
+      "Severity": "Medium",
+      "AppliesTo": "ServicePrincipal",
+      "Title": "Sensitive permissions linked to weak application-registration ownership",
+      "Rationale": "Sensitive service-principal grants rely on an application registration whose ownership is absent or limited to one accountable owner.",
+      "Recommendation": "Strengthen registration ownership and review sensitive grants together as one application identity lifecycle decision.",
+      "RequiredEvidence": [
+        "ApplicationPermission",
+        "DelegatedPermission",
+        "ApplicationCollectionState",
+        "ApplicationOwner"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity/enterprise-apps/overview-assign-app-owners"
+      ]
+    },
+    {
+      "Id": "EAE-APP-AUTH-001",
+      "Enabled": true,
+      "Category": "AuthenticationConfiguration",
+      "Severity": "Medium",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application registration contains a non-HTTPS browser redirect URI",
+      "Rationale": "Browser redirect URIs are part of the OAuth authorization boundary. Non-HTTPS browser redirects outside loopback development scenarios can expose authorization responses to interception or unintended handlers.",
+      "Recommendation": "Replace non-HTTPS web or SPA redirect URIs with HTTPS endpoints. Retain HTTP only for explicit localhost development scenarios where supported.",
+      "RequiredEvidence": [
+        "ApplicationRegistration"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity-platform/reply-url"
+      ]
+    },
+    {
+      "Id": "EAE-APP-AUTH-002",
+      "Enabled": true,
+      "Category": "AuthenticationConfiguration",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "OAuth implicit token issuance is enabled",
+      "Rationale": "Implicit access-token or ID-token issuance is a legacy browser authentication pattern. Modern applications should normally use authorization code flow with PKCE where applicable.",
+      "Recommendation": "Confirm the application still requires implicit issuance and migrate supported clients to authorization code flow with PKCE before disabling it.",
+      "RequiredEvidence": [
+        "ApplicationRegistration"
+      ],
+      "References": [
+        "https://learn.microsoft.com/entra/identity-platform/v2-oauth2-implicit-grant-flow"
+      ]
+    },
+    {
+      "Id": "EAE-APP-AUTH-003",
+      "Enabled": true,
+      "Category": "AuthenticationConfiguration",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Fallback public-client behavior is enabled",
+      "Rationale": "Fallback public-client configuration changes how Microsoft Entra interprets client type when it cannot otherwise determine whether the application is public or confidential.",
+      "Recommendation": "Confirm fallback public-client behavior is intentional for the application's authentication design and disable it when it is not required.",
+      "RequiredEvidence": [
+        "ApplicationRegistration"
+      ],
+      "References": [
+        "https://learn.microsoft.com/graph/api/resources/application?view=graph-rest-1.0"
+      ]
+    },
+    {
+      "Id": "EAE-APP-API-001",
+      "Enabled": true,
+      "Category": "ExposedApi",
+      "Severity": "Low",
+      "AppliesTo": "ApplicationRegistration",
+      "Title": "Application exposes pre-authorized client access",
+      "Rationale": "Pre-authorized client applications can access specified delegated scopes without an additional user consent prompt, creating an explicit trust relationship that should remain intentional and current.",
+      "Recommendation": "Review each pre-authorized client and delegated permission ID, remove stale relationships, and confirm the trust still matches the application architecture.",
+      "RequiredEvidence": [
+        "ApplicationRegistration"
+      ],
+      "References": [
+        "https://learn.microsoft.com/graph/api/resources/apiapplication?view=graph-rest-1.0"
+      ]
+    }
+  ]
+}

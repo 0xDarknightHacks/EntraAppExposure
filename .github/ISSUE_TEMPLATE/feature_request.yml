@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a narrowly scoped enhancement consistent with the project boundaries.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This analyzer intentionally remains narrow. General tenant posture, Conditional Access assessment, attack paths, remediation automation, and numerical scoring are outside the current product boundary.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the concrete application-identity/OAuth assessment problem.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the smallest useful change.
+    validations:
+      required: true
+  - type: dropdown
+    id: contract
+    attributes:
+      label: Expected public-contract impact
+      options:
+        - No snapshot/evidence contract change
+        - Snapshot/evidence change may be required
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / Graph surface
+      description: If applicable, identify the read-only Microsoft Graph evidence required and its completeness implications.

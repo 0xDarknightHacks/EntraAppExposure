@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a reproducible defect using sanitized information only.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not attach real tenant snapshots, reports, run logs, tokens, client secrets, customer identifiers, or other unsanitized assessment evidence.** Security vulnerabilities should follow SECURITY.md instead of a public issue.
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Release/tag or commit hash where the defect occurs.
+    validations:
+      required: true
+  - type: input
+    id: powershell
+    attributes:
+      label: PowerShell version and OS
+      placeholder: "PowerShell 7.6.x / Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Assessment mode
+      options:
+        - Targeted live
+        - Tenant-wide live
+        - Tenant-wide live with activity
+        - Offline replay
+        - Baseline/drift comparison
+        - Tests / development
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected vs actual behavior
+      description: Describe the defect without tenant/customer-sensitive values.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal sanitized reproduction
+      description: Use synthetic identifiers/fixtures where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Pester / diagnostics summary
+      description: Paste only sanitized test counts or relevant sanitized error text; do not paste complete run logs.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Sensitive-data check
+      options:
+        - label: I have removed tenant/customer identifiers, secrets, tokens, private keys, and real assessment artifacts from this report.
+          required: true

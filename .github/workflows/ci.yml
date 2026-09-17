@@ -1,0 +1,94 @@
+name: Release validation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: Release gate (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deterministic validation baseline
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          if($PSVersionTable.PSVersion -lt [version]'7.6.0'){throw 'PowerShell 7.6.0 or later is required.'}
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module Microsoft.PowerShell.SecretManagement -RequiredVersion 1.1.2 -Scope CurrentUser -Force -AllowClobber
+          Install-Module Microsoft.PowerShell.SecretStore -RequiredVersion 1.0.6 -Scope CurrentUser -Force -AllowClobber
+          Install-Module Pester -RequiredVersion 6.1.0 -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
+          Install-Module PSScriptAnalyzer -RequiredVersion 1.25.0 -Scope CurrentUser -Force -AllowClobber
+
+      - name: Validate canonical module
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Test-ModuleManifest -Path ./EntraAppExposure.psd1 | Out-Null
+          Import-Module ./EntraAppExposure.psd1 -Force
+          $commands=@(Get-Command -Module EntraAppExposure -CommandType Function)
+          if($commands.Count -ne 1 -or $commands[0].Name -ne 'Invoke-EntraAppExposure'){throw "Unexpected public command surface: $($commands.Name -join ', ')"}
+
+      - name: Validate prerequisites and runtime inventory
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=./Scripts/Test-EntraAppExposureRequirements.ps1 -SkipGalleryReachability -SkipAuthenticationConfiguration
+          if(-not $r.Ready){throw "Requirements failed: $($r.FailedRequiredChecks -join ', ')"}
+
+      - name: Validate source release integrity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=./Scripts/Test-EntraAppExposureRelease.ps1
+          if(-not $r.ReleaseEligible){throw "Release integrity failed: $($r.Violations -join '; ')"}
+
+      - name: Run Pester
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Import-Module Pester -RequiredVersion 6.1.0 -Force
+          Invoke-Pester -Path .\Tests -Output Detailed -CI
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Import-Module PSScriptAnalyzer -RequiredVersion 1.25.0 -Force
+          $issues=@(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error)
+          if($issues.Count){$issues|Format-Table|Out-String|Write-Host;throw "PSScriptAnalyzer reported $($issues.Count) error-severity issue(s)."}
+
+      - name: Verify canonical runtime files are tracked
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $moduleContent=Get-Content -LiteralPath ./EntraAppExposure.psm1 -Raw
+          $runtimeFiles=@([regex]::Matches($moduleContent,"'((?:Private|Public)/[^']+\.ps1)'")|ForEach-Object{$_.Groups[1].Value}|Select-Object -Unique)
+          foreach($runtimeFile in $runtimeFiles){
+            & git ls-files --error-unmatch -- $runtimeFile | Out-Null
+            if($LASTEXITCODE -ne 0){throw "Runtime file is not tracked: $runtimeFile"}
+          }
+          $untracked=@(& git ls-files --others --exclude-standard -- Private Public Rules Schemas Scripts Tests EntraAppExposure.psd1 EntraAppExposure.psm1 README.md)
+          if(@($untracked|Where-Object{$_}).Count){throw "Untracked source files would be omitted from a source archive: $($untracked -join ', ')"}
+
+      - name: Validate clean tracked-source archive
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $archive=Join-Path $env:RUNNER_TEMP 'source.zip'
+          $clean=Join-Path $env:RUNNER_TEMP 'clean-source'
+          git archive --format=zip HEAD -o $archive
+          Expand-Archive $archive $clean -Force
+          Push-Location $clean
+          try {
+            $r=./Scripts/Test-EntraAppExposureRelease.ps1
+            if(-not $r.ReleaseEligible){throw "Clean-source integrity failed: $($r.Violations -join '; ')"}
+            Import-Module ./EntraAppExposure.psd1 -Force
+          } finally { Pop-Location }
