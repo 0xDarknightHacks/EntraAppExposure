@@ -104,7 +104,6 @@ function Invoke-AppExposureGraphRequest {
         open.
     #>
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidDefaultValueSwitchParameter', '', Scope = 'Function', Target = 'FollowPagination', Justification = 'Pagination is the safe default for collection endpoints.')]
     param(
         [Parameter(Mandatory = $true)]
         [string]$Uri,
@@ -442,4 +441,3 @@ function Invoke-AppExposureGraphBatchRequest {
 
     return @($requestOrder | ForEach-Object { $resultById[[string]$_] })
 }
-
