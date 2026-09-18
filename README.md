@@ -2,173 +2,51 @@
 
 # Entra App Exposure
 
-**Evidence-driven application identity exposure assessment for Microsoft Entra ID**
+**Investigate Microsoft Entra application identity exposure in one place**
 
 [![Release](https://img.shields.io/badge/release-v1.0.0-blue)](#)
 [![PowerShell](https://img.shields.io/badge/PowerShell-7.6%2B-5391FE?logo=powershell)](#requirements)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 
-Entra App Exposure collects Microsoft Entra application identity state into a portable snapshot, evaluates deterministic exposure rules offline, prioritizes high-impact identity combinations, and produces evidence-linked self-contained reports.
+Entra App Exposure brings an application's permissions, consent, owners, credentials, configuration, and optional activity context into one repeatable investigation instead of forcing you to piece them together manually.
 
-**Collect once. Assess offline. Prioritize exposure. Trace every finding to evidence.**
+**App Exposure = investigate application identity exposure across app registrations and enterprise applications.**
 
-[Quick start](#quick-start) · [What it is](#what-it-is) · [Capabilities](#capabilities) · [Permissions](#permissions) · [Usage](#usage) · [Security model](#security-model)
+[Quick start](#quick-start) · [Why use it](#why-use-it) · [Screenshots](#screenshots) · [Permissions](#permissions) · [Usage](#usage)
 
 </div>
 
 ---
 
-## Table of contents
+## Why use it
 
-- [What it is](#what-it-is)
-- [Screenshots](#screenshots)
-- [Capabilities](#capabilities)
-- [Requirements](#requirements)
-- [Permissions](#permissions)
-- [Quick start](#quick-start)
-  - [1. Install](#1-install)
-  - [2. Configure authentication](#2-configure-authentication)
-  - [3. Run an assessment](#3-run-an-assessment)
-- [Usage](#usage)
-  - [Live tenant assessment](#live-tenant-assessment)
-  - [Activity context](#activity-context)
-  - [Exclude Microsoft first-party findings](#exclude-microsoft-first-party-findings)
-  - [Offline assessment](#offline-assessment)
-  - [Compare against a baseline](#compare-against-a-baseline)
-  - [Target a single application identity](#target-a-single-application-identity)
-- [Assessment model](#assessment-model)
-- [Interactive report](#interactive-report)
-- [Output](#output)
-- [Security model](#security-model)
-- [Architecture](#architecture)
-- [Cloud support and limitations](#cloud-support-and-limitations)
-- [Validation](#validation)
-- [Repository structure](#repository-structure)
-- [Contributing & security reporting](#contributing--security-reporting)
-- [License](#license)
+Microsoft Entra already exposes application registrations, enterprise applications, OAuth permissions and consent, credentials, owners, configuration, and sign-in activity. The problem is that an application-security review often requires jumping between those different views and manually deciding which combinations deserve attention.
 
----
+Entra App Exposure collects those application-identity signals together, evaluates a focused set of exposure rules, and produces a single investigation package with findings, evidence, prioritization, and optional change comparison.
 
-## What it is
+## What it adds beyond native Entra
 
-Entra App Exposure is a **read-only Microsoft Entra application identity exposure assessment engine** built with PowerShell and Microsoft Graph.
+It does **not** replace the Entra admin center or claim that Entra hides this data. It adds an application-focused correlation workflow:
 
-It focuses on the security state surrounding **application registrations, enterprise applications/service principals, OAuth consent, credentials, ownership, authentication configuration, and workload activity**. Collection happens once; snapshot validation, rule evaluation, prioritization, drift analysis, and reporting operate on the frozen evidence package.
+- brings app registration and enterprise-application context together instead of reviewing them separately;
+- correlates OAuth permissions and consent with ownership, credentials, configuration, trust, and optional activity context;
+- highlights multi-signal combinations that are tedious to identify manually;
+- saves a portable snapshot for offline re-analysis with zero Graph calls after collection;
+- compares application-identity state over time;
+- keeps each finding linked to the evidence and affected identity that produced it.
 
-### Collect → Assess → Prioritize
+## Example investigation
 
-| Capability | What it provides |
-|---|---|
-| Collect | Tenant-wide application registrations, service principals, OAuth grants, ownership, credentials, application configuration, and optional activity context |
-| Assess | Versioned deterministic rules backed by explicit evidence rather than opaque scoring |
-| Correlate | Cross-signal exposure such as sensitive OAuth access combined with weak accountability and credential risk |
-| Prioritize | Identity-level P0–P3 analyst priorities, with P0 reserved for the strongest exposure correlations |
-| Explain | Findings with what happened, why it matters, affected identities, evidence, references, and recommended action |
-| Re-analyze | Portable offline assessment with zero Microsoft Graph calls after snapshot collection |
-| Compare | Semantic snapshot drift for application-identity exposure changes over time |
-| Report | Self-contained HTML assessment, evidence, and diagnostics views plus JSON/CSV artifacts |
+Suppose a service principal has a sensitive application permission. You also want to know **who owns it, whether its credentials are expiring or long-lived, how consent is configured, whether the related app registration changes the context, and whether there is recent activity**. Native Entra exposes those pieces, but across different views. Entra App Exposure correlates them into one application-identity assessment and keeps the evidence together for later review.
 
-> **Not a general Entra posture scanner, topology engine, or attack-path tool.** Entra App Exposure intentionally stays focused on application identity and OAuth exposure. It does not assess Conditional Access, broad identity governance, attack paths, tenant-wide consent workflow administration, or numerical tenant risk scores.
+## Questions this tool helps answer
 
-The tool is strictly **read-only** and does not remediate tenant configuration.
-
-## Screenshots
-
-The following views are recommended for the public README once release screenshots are captured from a sanitized test tenant:
-
-<details>
-<summary><b>CLI Invoke run</b></summary>
-
-![CLI Invoke overview](Docs/Assets/CLI-overview.png)
-</details>
-
-<details>
-<summary><b>Main assessment overview</b></summary>
-
-![Main assessment overview](Docs/Assets/report-overview.png)
-
-</details>
-
-<details>
-<summary><b>Analyst Focus — P0 priorities</b></summary>
-
-![Analyst Focus overview](Docs/Assets/analyst-focus.png)
-
-</details>
-
-<details>
-<summary><b>Finding Flow</b></summary>
-
-![Finding Flow overview](Docs/Assets/finding-flow.png)
-
-</details>
-
-<details>
-<summary><b>Findings overview</b></summary>
-
-![Findings overview](Docs/Assets/findings-overview.png)
-
-</details>
-
-
-## Capabilities
-
-Entra App Exposure currently assesses:
-
-- application registrations and service principals/enterprise applications;
-- tenant-owned, third-party, Microsoft first-party, and managed-identity service-principal classification;
-- application permissions (`appRoleAssignments`) and delegated OAuth consent grants;
-- resource-qualified sensitive-permission exposure;
-- application-registration and service-principal ownership/accountability;
-- certificate and client-secret metadata, including expiration and lifetime conditions;
-- supported account type (`signInAudience`);
-- web, SPA, and public-client redirect URI configuration;
-- fallback public-client and implicit token issuance settings;
-- exposed API scopes and pre-authorized client applications as assessment evidence;
-- application roles, identifier URIs, and optional-claims context;
-- optional recent service-principal activity context;
-- verified-publisher/trust context where relevant to application exposure;
-- deterministic individual and grouped findings;
-- identity-level P0–P3 exposure prioritization;
-- portable snapshots, offline re-analysis, and semantic drift comparison;
-- evidence-linked HTML, JSON, and CSV reporting;
-- optional exclusion of Microsoft first-party enterprise applications from finding evaluation while preserving them in the snapshot.
-
-The bundled baseline is intentionally application-exposure-specific. Tenant-wide user-consent policy, admin-consent request/reviewer workflow, Conditional Access, directory-role/PIM posture, attack paths, and remediation automation remain out of scope.
-
-## Requirements
-
-- PowerShell 7.6 or later
-- A dedicated Microsoft Entra application registration for app-only assessment
-- For **live assessments only**:
-  - `Microsoft.PowerShell.SecretManagement` 1.1.2 or later
-  - `Microsoft.PowerShell.SecretStore` 1.0.6 or later
-
-The module itself and offline snapshot-analysis path do not require authentication modules.
-
-For development/release validation:
-
-- Pester 6.1.0
-- PSScriptAnalyzer 1.25.0
-
-Validate the local environment:
-
-```powershell
-.\Scripts\Test-EntraAppExposureRequirements.ps1
-```
-
-## Permissions
-
-Use only the Microsoft Graph **application permissions** required by the assessment mode you intend to run.
-
-| Capability | Microsoft Graph application permission |
-|---|---|
-| Core application identity, service-principal, ownership, permission, and delegated OAuth grant evidence | `Directory.Read.All` |
-| Service-principal activity context *(optional)* | `AuditLog.Read.All` |
-
-`Directory.Read.All` is used as the core read permission because the assessment includes tenant-wide delegated OAuth grant collection in addition to application/service-principal evidence. `AuditLog.Read.All` is requested only when activity collection is enabled.
-
-Grant admin consent to the dedicated assessment application. Normal operation performs read-only Microsoft Graph requests.
+- Which application identities have sensitive application permissions or delegated OAuth consent?
+- Who owns each application registration and service principal, and where is accountability weak or missing?
+- Which secrets or certificates are expired, expiring, or otherwise relevant to exposure?
+- Which permission, ownership, credential, trust, configuration, or activity signals combine into a higher-priority investigation?
+- What changed in application identity exposure since a previous snapshot?
+- Can I re-run the assessment offline without querying the tenant again?
 
 ## Quick start
 
@@ -231,6 +109,78 @@ $run = Invoke-EntraAppExposure `
 ```
 
 The command authenticates, collects the application-identity evidence, freezes a portable snapshot, evaluates the rule baseline offline, generates findings and priorities, and writes the report package.
+
+## Screenshots
+
+These views show the main analyst workflow from collection to prioritized application-identity findings and supporting evidence:
+
+<details>
+<summary><b>CLI Invoke run</b></summary>
+
+![CLI Invoke overview](Docs/Assets/CLI-overview.png)
+</details>
+
+<details>
+<summary><b>Main assessment overview</b></summary>
+
+![Main assessment overview](Docs/Assets/report-overview.png)
+
+</details>
+
+<details>
+<summary><b>Analyst Focus — P0 priorities</b></summary>
+
+![Analyst Focus overview](Docs/Assets/analyst-focus.png)
+
+</details>
+
+<details>
+<summary><b>Finding Flow</b></summary>
+
+![Finding Flow overview](Docs/Assets/finding-flow.png)
+
+</details>
+
+<details>
+<summary><b>Findings overview</b></summary>
+
+![Findings overview](Docs/Assets/findings-overview.png)
+
+</details>
+
+## Requirements
+
+- PowerShell 7.6 or later
+- A dedicated Microsoft Entra application registration for app-only assessment
+- For **live assessments only**:
+  - `Microsoft.PowerShell.SecretManagement` 1.1.2 or later
+  - `Microsoft.PowerShell.SecretStore` 1.0.6 or later
+
+The module itself and offline snapshot-analysis path do not require authentication modules.
+
+For development/release validation:
+
+- Pester 6.1.0
+- PSScriptAnalyzer 1.25.0
+
+Validate the local environment:
+
+```powershell
+.\Scripts\Test-EntraAppExposureRequirements.ps1
+```
+
+## Permissions
+
+Use only the Microsoft Graph **application permissions** required by the assessment mode you intend to run.
+
+| Capability | Microsoft Graph application permission |
+|---|---|
+| Core application identity, service-principal, ownership, permission, and delegated OAuth grant evidence | `Directory.Read.All` |
+| Service-principal activity context *(optional)* | `AuditLog.Read.All` |
+
+`Directory.Read.All` is used as the core read permission because the assessment includes tenant-wide delegated OAuth grant collection in addition to application/service-principal evidence. `AuditLog.Read.All` is requested only when activity collection is enabled.
+
+Grant admin consent to the dedicated assessment application. Normal operation performs read-only Microsoft Graph requests.
 
 ## Usage
 
@@ -302,9 +252,55 @@ For the complete supported parameter surface:
 Get-Help Invoke-EntraAppExposure -Full
 ```
 
+## Technical scope
+
+Entra App Exposure currently assesses:
+
+- application registrations and service principals/enterprise applications;
+- tenant-owned, third-party, Microsoft first-party, and managed-identity service-principal classification;
+- application permissions (`appRoleAssignments`) and delegated OAuth consent grants;
+- resource-qualified sensitive-permission exposure;
+- application-registration and service-principal ownership/accountability;
+- certificate and client-secret metadata, including expiration and lifetime conditions;
+- supported account type (`signInAudience`);
+- web, SPA, and public-client redirect URI configuration;
+- fallback public-client and implicit token issuance settings;
+- exposed API scopes and pre-authorized client applications as assessment evidence;
+- application roles, identifier URIs, and optional-claims context;
+- optional recent service-principal activity context;
+- verified-publisher/trust context where relevant to application exposure;
+- deterministic individual and grouped findings;
+- identity-level P0–P3 exposure prioritization;
+- portable snapshots, offline re-analysis, and semantic drift comparison;
+- evidence-linked HTML, JSON, and CSV reporting;
+- optional exclusion of Microsoft first-party enterprise applications from finding evaluation while preserving them in the snapshot.
+
+The bundled baseline is intentionally application-exposure-specific. Tenant-wide user-consent policy, admin-consent request/reviewer workflow, Conditional Access, directory-role/PIM posture, attack paths, and remediation automation remain out of scope.
+
+## How it works
+
+The application-focused workflow above is implemented as a collect-once, offline-assessment pipeline.
+
+### Collect → Assess → Prioritize
+
+| Capability | What it provides |
+|---|---|
+| Collect | Tenant-wide application registrations, service principals, OAuth grants, ownership, credentials, application configuration, and optional activity context |
+| Assess | Versioned deterministic rules backed by explicit evidence rather than opaque scoring |
+| Correlate | Cross-signal exposure such as sensitive OAuth access combined with weak accountability and credential risk |
+| Prioritize | Identity-level P0–P3 analyst priorities, with P0 reserved for the strongest exposure correlations |
+| Explain | Findings with what happened, why it matters, affected identities, evidence, references, and recommended action |
+| Re-analyze | Portable offline assessment with zero Microsoft Graph calls after snapshot collection |
+| Compare | Semantic snapshot drift for application-identity exposure changes over time |
+| Report | Self-contained HTML assessment, evidence, and diagnostics views plus JSON/CSV artifacts |
+
+> **Not a general Entra posture scanner, topology engine, or attack-path tool.** Entra App Exposure intentionally stays focused on application identity and OAuth exposure. It does not assess Conditional Access, broad identity governance, attack paths, tenant-wide consent workflow administration, or numerical tenant risk scores.
+
+The tool is strictly **read-only** and does not remediate tenant configuration.
+
 ## Assessment model
 
-The bundled baseline is stored in `Rules/Baseline.json` and validated by `Schemas/RulePack.schema.json`. Rule metadata is external to the PowerShell evaluator implementation.
+The bundled baseline is stored in `Rules/Baseline.json`. Its format is documented in `Schemas/RulePack.schema.json`, and runtime validation is performed by `Import-AppExposureRulePack`. Rule metadata is external to the PowerShell evaluator implementation.
 
 Rule IDs follow:
 

@@ -1,5 +1,5 @@
 #Requires -Modules Pester
-BeforeAll { Import-Module (Join-Path $PSScriptRoot '..\EntraAppExposure.psd1') -Force }
+Import-Module (Join-Path $PSScriptRoot '..\EntraAppExposure.psd1') -Force
 
 InModuleScope EntraAppExposure {
 Describe 'Standalone report UI component' {

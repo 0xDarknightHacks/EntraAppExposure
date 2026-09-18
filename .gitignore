@@ -4,6 +4,7 @@
 /BaselineValidation/
 /OfflineReports/
 /TestResults/
+/testResults.xml
 /Coverage/
 
 # Runtime logs and generated archives
